@@ -116,6 +116,27 @@ geoip() {
 # Вывод первых 10 самых больших образов Докер
 alias dimgf='docker images --format "{{.Repository}} {{.Tag}} {{.Size}}" | sort -h -k3 -r | head -10'
 
+# Поиск поддоменов и сохраниние списка в файл
+subdomains () {
+    local domain="$1"
+    
+    if [[ -z "$domain" ]]; then
+        echo "Использование: subcrt example.com"
+        return 1
+    fi
+
+    echo "Ищем поддомены для $domain в crt.sh..."
+    
+    curl -s "https://crt.sh/?q=%25.$domain&output=json" | \
+        jq -r '.[].name_value | gsub("\\*\\."; "") | gsub("^[*.]\\.'"$domain"'$"; "'"$domain"'") | select(length > 0)' | \
+        tr '[:upper:]' '[:lower:]' | \
+        grep -E "^[a-z0-9.-]+\.$domain\$" | \
+        sort -u | \
+        tee "${domain}_subdomains_crtsh.txt"
+    
+    local count=$(wc -l < "${domain}_subdomains_crtsh.txt" 2>/dev/null || echo 0)
+    echo "Готово! Найдено $count поддоменов → ${domain}_subdomains_crtsh.txt"
+}
 
 # ===============================
 # Конец .bashrc

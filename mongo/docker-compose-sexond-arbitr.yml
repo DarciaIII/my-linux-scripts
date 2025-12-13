@@ -1,0 +1,24 @@
+services:
+  mongo_claster2:   # Вторая Нода
+    image: mongo:4.4
+    container_name: mongo_claster2
+    restart: always
+    command: --replSet rs0 --bind_ip_all --keyFile /etc/keyfile
+    volumes:
+      - mongo_claster2_data:/data/db
+      - /opt/mongo_claster/mongo_claster-keyfile:/etc/keyfile:ro
+    ports:
+      - 27017:27017
+
+  mongo_claster3:   # Арбитр
+    image: mongo:4.4
+    container_name: mongo_claster_arbitr
+    restart: always
+    command: --replSet rs0 --keyFile /etc/keyfile
+    volumes:
+      - /opt/mongo_claster/mongo_claster-keyfile:/etc/keyfile:ro
+    ports:
+      - 27018:27017
+
+volumes:
+  mongo_claster2_data:

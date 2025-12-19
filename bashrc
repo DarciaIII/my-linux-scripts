@@ -115,6 +115,11 @@ geoip() {
 
 # Вывод первых 10 самых больших образов Докер
 alias dimgf='docker images --format "{{.Repository}} {{.Tag}} {{.Size}}" | sort -h -k3 -r | head -10'
+ 
+alias dcu='docker compose up -d'
+
+# Алиас для утилиты монторинга docker - ctop
+alias doc_top="docker run --rm -ti --name=ctop --volume /var/run/docker.sock:/var/run/docker.sock:ro quay.io/vektorlab/ctop:latest"
 
 # Поиск поддоменов и сохраниние списка в файл
 subdomains () {
